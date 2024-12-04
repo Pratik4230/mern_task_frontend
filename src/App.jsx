@@ -5,6 +5,7 @@ import axiosInstance from "./utils/axiosInstance";
 import TableData from "./components/TableData";
 import Statistics from "./components/Statistics";
 import Chart from "./components/Chart";
+
 function App() {
   const thStyle = "border border-slate-600";
 
@@ -16,6 +17,7 @@ function App() {
   const [isError, setIsError] = useState(false);
 
   useEffect(() => {
+    //Timer for Debounced Search
     const timer = setTimeout(() => {
       getFeed();
       console.log(search);
@@ -31,7 +33,6 @@ function App() {
       const data = await axiosInstance.get(
         `/transactions/feed?page=${page}&limit=10&search=${search}`
       );
-      // console.log("api data", data?.data);
       setTransactions(data?.data);
       setIsLoading(false);
     } catch (error) {
@@ -45,10 +46,6 @@ function App() {
     setMonth(selectedMonth);
     setPage(1);
   };
-
-  // console.log("transactions", transactions);
-  // console.log("page", page);
-  // console.log("search", search);
 
   if (loading) {
     return <h1 className="text-2xl font-semibold">Loading...</h1>;
@@ -77,7 +74,7 @@ function App() {
               placeholder="Search by title, description, price"
               className="border-2 border-slate-300 bg-white text-slate-700 placeholder-gray-500 p-3 rounded-lg w-full sm:w-4/12 focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
-
+            //select month
             <select
               onChange={(e) => {
                 handleMonth(e.target.value);
@@ -125,6 +122,7 @@ function App() {
             <p className="text-slate-600 font-medium">
               Page No: {transactions?.currentPage}
             </p>
+
             <div className="flex items-center">
               <button
                 onClick={() => setPage(page - 1)}
@@ -142,6 +140,7 @@ function App() {
                 Next
               </button>
             </div>
+
             <p className="text-slate-600 font-medium">
               Per Page: {transactions?.transactions?.length}
             </p>

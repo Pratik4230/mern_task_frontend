@@ -13,15 +13,11 @@ const Statistics = ({ month }) => {
       const data = await axiosInstance.get(
         `/transactions/statistics?month=${month}`
       );
-      console.log("data");
-
       setStatistics(data?.data);
     } catch (error) {
       console.log("error", error);
     }
   };
-
-  console.log("statistics", statistics);
 
   return (
     <>
@@ -39,6 +35,7 @@ const Statistics = ({ month }) => {
               {statistics?.totalSaleAmount}
             </span>
           </div>
+
           <div className="flex justify-between items-center border-b border-yellow-300 pb-3 mb-3">
             <span className="text-lg text-slate-700 font-medium">
               Total Sold Items
@@ -47,6 +44,7 @@ const Statistics = ({ month }) => {
               {statistics?.totalSoldItems}
             </span>
           </div>
+
           <div className="flex justify-between items-center">
             <span className="text-lg text-slate-700 font-medium">
               Total Not Sold Items
