@@ -3,7 +3,7 @@ import "./App.css";
 import Circle from "./components/Circle";
 import axiosInstance from "./utils/axiosInstance";
 import TableData from "./components/TableData";
-
+import Statistics from "./components/Statistics";
 function App() {
   const thStyle = "border border-slate-600";
 
@@ -128,7 +128,9 @@ function App() {
           </div>
         </section>
 
-        <section>het</section>
+        <section>
+          <Statistics month={month} />
+        </section>
       </main>
     </>
   );
