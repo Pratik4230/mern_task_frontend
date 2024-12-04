@@ -4,6 +4,7 @@ import Circle from "./components/Circle";
 import axiosInstance from "./utils/axiosInstance";
 import TableData from "./components/TableData";
 import Statistics from "./components/Statistics";
+import Chart from "./components/Chart";
 function App() {
   const thStyle = "border border-slate-600";
 
@@ -11,12 +12,14 @@ function App() {
   const [page, setPage] = useState(1);
   const [search, setSearch] = useState("");
   const [month, setMonth] = useState("March");
+  const [loading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
 
   useEffect(() => {
     const timer = setTimeout(() => {
       getFeed();
       console.log(search);
-    }, 170);
+    }, 220);
 
     return () => {
       clearTimeout(timer);
@@ -30,8 +33,11 @@ function App() {
       );
       // console.log("api data", data?.data);
       setTransactions(data?.data);
+      setIsLoading(false);
     } catch (error) {
       console.log("error", error);
+      setIsError(true);
+      setIsLoading(false);
     }
   };
 
@@ -44,20 +50,32 @@ function App() {
   // console.log("page", page);
   // console.log("search", search);
 
+  if (loading) {
+    return <h1 className="text-2xl font-semibold">Loading...</h1>;
+  }
+
+  if (isError) {
+    return (
+      <h1 className="text-2xl font-semibold">
+        Something went wrong please try again
+      </h1>
+    );
+  }
+
   return (
     <>
       <main>
-        <section className="p-5 bg-sky-50 rounded-lg flex flex-col items-center ">
+        <section className="p-6 bg-gradient-to-r from-sky-50 via-sky-100 to-sky-50 rounded-lg shadow-md flex flex-col items-center">
           <Circle />
 
-          <div className="flex justify-between w-full my-10">
+          <div className="flex flex-col sm:flex-row justify-between w-full my-8 gap-4">
             <input
               type="text"
               onChange={(e) => {
                 setSearch(e.target.value), setPage(1);
               }}
-              placeholder="search by title, description, price"
-              className="border-2 border-slate-200 bg-slate-800 text-white p-2 rounded-xl w-3/12"
+              placeholder="Search by title, description, price"
+              className="border-2 border-slate-300 bg-white text-slate-700 placeholder-gray-500 p-3 rounded-lg w-full sm:w-4/12 focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
 
             <select
@@ -65,7 +83,7 @@ function App() {
                 handleMonth(e.target.value);
               }}
               value={month}
-              className="border-2 border-slate-200 bg-slate-800 text-white px-1 rounded-xl"
+              className="border-2 border-slate-300 bg-white text-slate-700 px-3 py-2 rounded-lg focus:outline-none focus:ring-2 focus:ring-sky-300"
             >
               <option value="January">January</option>
               <option value="February">February</option>
@@ -82,9 +100,9 @@ function App() {
             </select>
           </div>
 
-          <div>
-            <table className="border-collapse border border-slate-400 table-auto ">
-              <thead>
+          <div className="overflow-x-auto w-full">
+            <table className="border-collapse border border-slate-300 table-auto w-full bg-white shadow-sm rounded-lg">
+              <thead className="bg-sky-100">
                 <tr>
                   <th className={thStyle}>ID</th>
                   <th className={thStyle}>Title</th>
@@ -95,41 +113,47 @@ function App() {
                   <th className={thStyle}>Image</th>
                 </tr>
               </thead>
-
               <tbody>
                 {transactions?.transactions?.map((transaction) => (
                   <TableData key={transaction?._id} transaction={transaction} />
                 ))}
               </tbody>
             </table>
+          </div>
 
-            <div className="flex justify-between mt-5 text-lg">
-              <p> Page No : {transactions?.currentPage}</p>{" "}
-              <div>
-                {" "}
-                <button
-                  onClick={() => setPage(page - 1)}
-                  disabled={page === 1}
-                  className={`bg-black text-white  p-1 px-2 rounded-lg disabled:bg-slate-700 `}
-                >
-                  Previos
-                </button>
-                <span className="mx-2 font-bold text-xl">-</span>
-                <button
-                  onClick={() => setPage(page + 1)}
-                  disabled={page * 10 >= transactions?.totalDocuments}
-                  className={`bg-black text-white  p-1 px-2 rounded-lg  disabled:bg-slate-700 `}
-                >
-                  Next
-                </button>
-              </div>
-              <p> Per Page : {transactions?.transactions?.length}</p>
+          <div className="flex flex-col sm:flex-row justify-between items-center mt-6 text-lg gap-4 w-full">
+            <p className="text-slate-600 font-medium">
+              Page No: {transactions?.currentPage}
+            </p>
+            <div className="flex items-center">
+              <button
+                onClick={() => setPage(page - 1)}
+                disabled={page === 1}
+                className="bg-sky-600 text-white p-2 px-4 rounded-lg disabled:bg-slate-400"
+              >
+                Previous
+              </button>
+              <span className="mx-3 font-bold text-xl text-slate-700">-</span>
+              <button
+                onClick={() => setPage(page + 1)}
+                disabled={page * 10 >= transactions?.totalDocuments}
+                className="bg-sky-600 text-white p-2 px-4 rounded-lg disabled:bg-slate-400"
+              >
+                Next
+              </button>
             </div>
+            <p className="text-slate-600 font-medium">
+              Per Page: {transactions?.transactions?.length}
+            </p>
           </div>
         </section>
 
         <section>
           <Statistics month={month} />
+        </section>
+
+        <section>
+          <Chart month={month} />
         </section>
       </main>
     </>
