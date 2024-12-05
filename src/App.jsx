@@ -74,7 +74,7 @@ function App() {
               placeholder="Search by title, description, price"
               className="border-2 border-slate-300 bg-white text-slate-700 placeholder-gray-500 p-3 rounded-lg w-full sm:w-4/12 focus:outline-none focus:ring-2 focus:ring-sky-300"
             />
-            //select month
+            {/* select month */}
             <select
               onChange={(e) => {
                 handleMonth(e.target.value);
